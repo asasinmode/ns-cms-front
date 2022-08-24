@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+@import url('./glow.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+   .flexCentered{
+      @apply flex justify-center items-center
+   }
+}
+
+:root{
+   --neon-green: #39ff14;
+}
+
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+   transition: all 100ms ease;
+   font-family: 'Rubik', sans-serif;
+   -webkit-tap-highlight-color: transparent;
+}
+*:focus-visible{
+   outline: 2px solid transparent;
+   box-shadow: 0 0 0 2px white;
+   z-index: 1;
+}
+
+html, body{
+   width: 100vw;
+   height: 100vh;
+}
+
+.shake{
+   animation: shake 0.3s;
+}
+@keyframes shake{
+   0% { transform: translate(0) }
+   20% { transform: translate(0.3em) }
+   40% { transform: translate(-0.3em) }
+   60% { transform: translate(0.3em) }
+   80% { transform: translate(-0.3em) }
+   100% { transform: translate(0) }
+}

@@ -1,0 +1,40 @@
+.glow-gap, .glow-sm, .glow-border, .glow-rule{
+   --gw-box-shadow: inset 0 0 0.15rem 0 var(--neon-green),
+      inset 0 0 0.3rem 0 var(--neon-green),
+      0 0 0.25rem 0 hsl(0 0% 100% / 0.6),
+      0 0 0.5rem 0 var(--neon-green),
+      0 0 0.8rem 0 var(--neon-green);
+}
+
+.glow-sm{
+   box-shadow: var(--gw-box-shadow);
+}
+.glow-border{
+   border: solid 2px var(--neon-green);
+}
+.glow-gap-horizontal, .glow-gap-vertical{
+   gap: 2px;
+}
+.glow-rule, :is(.glow-gap-horizontal, .glow-gap-vertical) > *:not(:last-child){
+   position: relative;
+}
+
+.glow-rule::after, :is(.glow-gap-horizontal, .glow-gap-vertical) > *:not(:last-child)::after{
+   content: '';
+   position: absolute;
+   background: var(--neon-green);
+   box-shadow: var(--gw-box-shadow);
+}
+
+.glow-gap-horizontal > *:not(:last-child)::after{
+   height: 2px;
+   width: 100%;
+   bottom: -2px;
+   left: 0;
+}
+.glow-gap-vertical > *:not(:last-child)::after{
+   height: 100%;
+   width: 2px;
+   right: -2px;
+   top: 0;
+}
