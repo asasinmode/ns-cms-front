@@ -72,8 +72,8 @@ export default defineComponent({
          return {
             ...satellite,
             createdAt: new Date(satellite.createdAt),
-            updatedAt: new Date(satellite.createdAt),
-            launchDate: new Date(satellite.createdAt)
+            updatedAt: new Date(satellite.updatedAt),
+            launchDate: new Date(satellite.launchDate)
          }
       }
    },

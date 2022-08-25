@@ -8,7 +8,7 @@
    >
       <h1 class="text-center">here's your button</h1>
       <div class="w-32 h-32 my-auto flex justify-center items-start pt-4">
-         <button class="pushButton"></button>
+         <button class="pushButton" tabindex="-1"></button>
       </div>
       <h3 class="text-center">you can press it</h3>
    </article>

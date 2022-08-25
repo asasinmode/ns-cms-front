@@ -2,11 +2,11 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
    state: () => ({
-      name: "test",
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMDYzMGFlZjcwMmVhZmM0MzA0MzZmYSIsImlhdCI6MTY2MTQzOTY0MywiZXhwIjoxNjYxNTI2MDQzfQ._8i-htypgmDL2ougU_3kY6LlFeeL0kSJK4kB6jENbc4",
-      id: "630630aef702eafc430436fa",
-      country: "test",
-      hasButton: true
+      name: "",
+      token: "",
+      id: "",
+      country: "",
+      hasButton: false
    }),
    getters: {
       isLoggedIn: (state) => {
