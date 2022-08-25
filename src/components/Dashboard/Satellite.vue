@@ -1,6 +1,6 @@
 <template>
    <article class="w-full hover:bg-neon-green/10" :class="{ 'bg-neon-green/10': isExpanded }">
-      <button @click="$emit('expandMe', id)" :disabled="isExpanded"
+      <button @click="$emit('expandMe', id)" :disabled="isExpanded" :id="`buttonExpand${ id }`"
          class="w-full h-12 glow-rule after:h-[2px] after:w-full after:left-0
             after:opacity-0 hover:after:opacity-30 disabled:hover:after:opacity-0 focus-visible:bg-white/10"
          :class="{ 'after:bottom-[-2px] ': !isNew,
