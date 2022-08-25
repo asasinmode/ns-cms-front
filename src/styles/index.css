@@ -12,6 +12,7 @@
 
 :root{
    --neon-green: #39ff14;
+   --neon-red: hsl(0 100% 60%);
 }
 
 *,

@@ -3,7 +3,7 @@
       <legend class="mb-1 w-full text-center">
          <slot />
       </legend>
-      <div class="flex flex-row w-full rounded-sm glow-sm">
+      <div class="flex flex-row rounded-sm glow-sm w-64">
          <label :for="`${ name }no`" :class="{ 'selected': !modelValue }"
             class="flexCentered flex-1 h-12 cursor-pointer hover:bg-neon-green/10"
          >

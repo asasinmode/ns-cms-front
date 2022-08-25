@@ -4,7 +4,7 @@
       <template v-if="!isLoadingSatellites">
          <Satellite v-for="satellite in satellites" :key="satellite._id" :id="satellite._id" :satellite="satellite"
             :selectedSatellite="selectedSatellite" @expandMe="selectSatellite" />
-         <Satellite :id="'new'" :selectedSatellite="selectedSatellite" @expandMe="selectSatellite" />
+         <Satellite :selectedSatellite="selectedSatellite" :id="'new'" @expandMe="selectSatellite" />
       </template>
       <Loading v-else />
    </main>

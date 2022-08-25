@@ -1,7 +1,7 @@
 <template>
-   <div class="inputContainer flexCentered"
+   <div class="inputContainer flexCentered h-fit"
       :class="{ '!mb-5': helperText.length || errorText.length,
-         'error': showError }"
+         'error': isInvalid }"
    >
       <input :id="id" placeholder=" " :value="modelValue" v-bind="$attrs" :pattern="pattern.source"
          @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
