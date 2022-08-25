@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap');
 @import url('./glow.css');
+@font-face{ 
+	font-family: 'Top Secret';
+	src: url('WebFont.eot');
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,7 +26,7 @@
    margin: 0;
    padding: 0;
    transition: all 100ms ease;
-   font-family: 'Rubik', sans-serif;
+   font-family: 'IBM Plex Mono', monospace;
    -webkit-tap-highlight-color: transparent;
 }
 *:focus-visible{

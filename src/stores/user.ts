@@ -6,7 +6,7 @@ export const useUserStore = defineStore('user', {
       token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMDYzMGFlZjcwMmVhZmM0MzA0MzZmYSIsImlhdCI6MTY2MTQzOTY0MywiZXhwIjoxNjYxNTI2MDQzfQ._8i-htypgmDL2ougU_3kY6LlFeeL0kSJK4kB6jENbc4",
       id: "630630aef702eafc430436fa",
       country: "test",
-      hasButton: false
+      hasButton: true
    }),
    getters: {
       isLoggedIn: (state) => {
@@ -15,7 +15,6 @@ export const useUserStore = defineStore('user', {
    },
    actions: {
       setPresident(name: string, token: string, id: string, country: string, hasButton: boolean){
-         console.log(token, id)
          this.name = name
          this.token = token
          this.id = id
