@@ -43,20 +43,20 @@ export default defineComponent({
       return {
          inputs: {
             name: {
-               value: "test",
+               value: "",
                showError: false
             },
             country: {
-               value: "test",
+               value: "",
                showError: false
             },
             email: {
-               value: "test@test",
+               value: "",
                showError: false,
                errorText: "email cannot be empty"
             },
             password: {
-               value: "test123!",
+               value: "",
                showError: false,
                errorText: "password cannot be empty"
             },
