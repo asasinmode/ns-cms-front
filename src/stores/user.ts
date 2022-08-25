@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('user', {
    state: () => ({
       name: "test",
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMDYzMGFlZjcwMmVhZmM0MzA0MzZmYSIsImlhdCI6MTY2MTM1MTY3MiwiZXhwIjoxNjYxNDM4MDcyfQ.sJhEIRkoeyIGlJ7nkivQM45Y3_GsXV8Mac6FL1jVMjM",
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMDYzMGFlZjcwMmVhZmM0MzA0MzZmYSIsImlhdCI6MTY2MTQzOTY0MywiZXhwIjoxNjYxNTI2MDQzfQ._8i-htypgmDL2ougU_3kY6LlFeeL0kSJK4kB6jENbc4",
       id: "630630aef702eafc430436fa",
       country: "test",
       hasButton: false
@@ -15,6 +15,7 @@ export const useUserStore = defineStore('user', {
    },
    actions: {
       setPresident(name: string, token: string, id: string, country: string, hasButton: boolean){
+         console.log(token, id)
          this.name = name
          this.token = token
          this.id = id

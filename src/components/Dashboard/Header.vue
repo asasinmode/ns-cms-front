@@ -3,8 +3,8 @@
       after:bottom-[-2px] after:left-0 after:h-[2px] after:w-full
       flex flex-row"
    >
-      <div class="px-4 flex items-center min-w-[3.5rem] max-w-[12rem]">
-         <span class="text-ellipsis inline-block overflow-hidden">
+      <div class="px-4 flex items-center justify-start min-w-[3.5rem] max-w-[5rem] md:max-w-[10rem]">
+         <span class="text-ellipsis whitespace-nowrap inline-block overflow-hidden">
             {{ country }}
          </span>
       </div>

@@ -96,8 +96,9 @@ export default defineComponent({
             if(e.response?.data?.fields !== undefined){
                const keys = Object.keys(e.response.data.fields).filter(key => Object.keys(this.inputs).includes(key))
                
+               const inputs = this.inputs
                keys.forEach(key => {
-                  this.inputs[key as keyof typeof this.inputs].showError = true
+                  this.inputs[key as keyof typeof inputs].showError = true
                   if(key === 'email'){
                      this.inputs.email.errorText = e.response.data.fields.email
                   }

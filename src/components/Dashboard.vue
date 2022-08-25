@@ -3,8 +3,12 @@
    <main class="w-full flex-1 overflow-x-hidden overflow-y-auto">
       <template v-if="!isLoadingSatellites">
          <Satellite v-for="satellite in satellites" :key="satellite._id" :id="satellite._id" :satellite="satellite"
-            :selectedSatellite="selectedSatellite" @expandMe="selectSatellite" />
-         <Satellite :selectedSatellite="selectedSatellite" :id="'new'" @expandMe="selectSatellite" />
+            :selectedSatellite="selectedSatellite" @expandMe="selectSatellite"
+            @deleteMe="spliceSatellite" @updateMe="updateSatellite"
+         />
+         <Satellite :selectedSatellite="selectedSatellite" :id="'new'" @expandMe="selectSatellite"
+            @createNew="pushSatellite"
+         />
       </template>
       <Loading v-else />
    </main>
@@ -53,6 +57,24 @@ export default defineComponent({
          }))
 
          this.isLoadingSatellites = false
+      },
+      spliceSatellite(id: string){
+         this.satellites.splice(this.satellites.findIndex((satellite: ifSatellite) => satellite._id === id), 1)
+      },
+      pushSatellite(satellite: ifSatellite){
+         this.satellites.push(this.dateifySatellite(satellite))
+      },
+      updateSatellite(satellite: ifSatellite){
+         const satelliteIndex = this.satellites.findIndex((oldSatellite: ifSatellite) => oldSatellite._id === satellite._id)
+         this.satellites[satelliteIndex] = this.dateifySatellite(satellite)
+      },
+      dateifySatellite(satellite: ifSatellite){
+         return {
+            ...satellite,
+            createdAt: new Date(satellite.createdAt),
+            updatedAt: new Date(satellite.createdAt),
+            launchDate: new Date(satellite.createdAt)
+         }
       }
    },
    computed: {

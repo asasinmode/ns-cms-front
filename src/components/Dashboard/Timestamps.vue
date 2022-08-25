@@ -1,5 +1,5 @@
 <template>
-   <div class="flex flex-col text-gray-300">
+   <div class="flex flex-col text-gray-300 pointer-events-none text-sm">
          <div class="flex items-center flex-col md:flex-row">
             <span class="flex justify-end flex-1 pr-1">created at:</span>
             <span class="font-semibold pl-1">{{ parsedCreated }}</span>

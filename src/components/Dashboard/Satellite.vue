@@ -62,6 +62,9 @@
             </DateInput>
          </div>
          <div class="flexCentered flex-col gap-0">
+            <h3 class="text-neon-red text-lg text-center" v-if="errorMessage.length > 0">
+               {{ errorMessage }}
+            </h3>
             <OperationButtons :isProcessing="isProcessing" @save="updateSatellite(false)" @create="updateSatellite(true)" @delete="deleteSatellite" :isNew="isNew" />
             <Timestamps v-if="satellite" :updatedAt="satellite.updatedAt" :createdAt="satellite.createdAt" />
          </div>
@@ -79,6 +82,8 @@ import DateInput from "../Misc/Inputs/DateInput.vue";
 import OperationButtons from "./OperationButtons.vue"
 import Timestamps from "./Timestamps.vue";
 import type { ifSatellite } from "@/typings/satellite";
+import { mapState } from "pinia";
+import { useUserStore } from "@/stores/user";
 
 export default defineComponent({
    name: "Satellite",
@@ -101,6 +106,7 @@ export default defineComponent({
          minimumLaunchDate: new Date('01 Jan 1970 00:00:00 GMT'),
          minimumVintageYear: 1900,
          isProcessing: false,
+         error: <any> undefined,
          input: {
             sideNumber: {
                value: "",
@@ -132,7 +138,7 @@ export default defineComponent({
                showError: false
             },
             altitude: {
-               value: 300,
+               value: 500,
                showError: false
             },
             hasAI: {
@@ -148,12 +154,54 @@ export default defineComponent({
       })
    },
    methods: {
-      updateSatellite(createNew: boolean){
+      async updateSatellite(createNew: boolean){
+         this.error = undefined
+
          const isSatelliteValid = this.validateSatellite()
-         console.log(`${ createNew ? 'creating' : 'updating' } satellite`, "are inputs valid?", isSatelliteValid)
+         if(!isSatelliteValid){ return }
+
+         this.isProcessing = true
+
+         try {
+            const body = {
+               ...this.inputValues,
+               launchDate: this.inputValues.launchDate.getTime()
+            }
+
+            let satelliteData
+
+            if(createNew){
+               satelliteData = await this.$http.post('satellites', body, {
+                  headers: { 'Authorization': `Bearer: ${ this.token }` }
+               }).then(res => res.data)
+            } else {
+               satelliteData = await this.$http.patch(`satellites/${ this.id }`, body, {
+                  headers: { 'Authorization': `Bearer: ${ this.token }` }
+               }).then(res => res.data)
+            }
+
+            this.$emit(createNew ? "createNew" : "updateMe", satelliteData)
+         } catch(e: any){
+            this.error = e
+         }
+
+         this.isProcessing = false
       },
-      deleteSatellite(){
-         console.log("deletting satelite")
+      async deleteSatellite(){
+         this.error = undefined
+         this.isProcessing = true
+
+         try {
+            await this.$http.delete(`satellites/${ this.id }`, {
+               headers: { 'Authorization': `Bearer: ${ this.token }` }
+            })
+
+            this.$emit('deleteMe', this.id)
+         } catch(e: any){
+            this.error = e
+         }
+
+         this.isProcessing = false
       },
       validateSatellite(){
          const { sideNumber, manufacturer, softwareVersion, vintage, launchDate, ammunitionLeft, altitude } = this.inputValues
@@ -181,6 +229,7 @@ export default defineComponent({
       }
    },
    computed: {
+      ...mapState(useUserStore, ['token']),
       isNew(){
          return this.id === 'new'
       },
@@ -202,6 +251,27 @@ export default defineComponent({
       },
       softwareVersionInputErrorText(){
          return this.input.softwareVersion.value.length === 0 ? "cannot be empty" : "invalid semver format"
+      },
+      errorMessage(): string{
+         if(this.error === undefined){
+            return ""
+         }
+
+         if(this.error.name !== "AxiosError" || !this.error.response){
+            console.error(this.error)
+            return "unknown error has occurred"
+         }
+
+         if(this.error.code === "ERR_NETWORK"){
+            return "no connection to server"
+         }
+
+         const responseStatus = this.error.response.status
+
+         return responseStatus === 401 ? "unauthorized. try to login again"
+            : responseStatus === 404 ? "not found. try to refresh page"
+            : responseStatus === 500 ? "unknown error has occurred"
+            : "invalid satellite data"
       }
    }
 })
