@@ -1,4 +1,4 @@
-import Button from "./Button.vue"
+import Button from "../Misc/Button.vue"
 
 describe('<Button />', () => {
    it('renders content', () => {

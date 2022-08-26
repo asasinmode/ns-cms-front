@@ -1,4 +1,4 @@
-import NumberInput from "./NumberInput.vue"
+import NumberInput from "../Misc/Inputs/NumberInput.vue"
 
 const inputData = {
    props: {

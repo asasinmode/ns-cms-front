@@ -1,4 +1,4 @@
-import BooleanInput from "./BooleanInput.vue"
+import BooleanInput from "../Misc/Inputs/BooleanInput.vue"
 
 describe('<BooleanInput />', () => {
    it('starts with specified value', () => {

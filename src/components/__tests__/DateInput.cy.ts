@@ -1,4 +1,4 @@
-import DateInput from "./DateInput.vue"
+import DateInput from "../Misc/Inputs/DateInput.vue"
 
 const currentDate = new Date('01 Jan 2000 00:00:00 GMT')
 const inputData = {

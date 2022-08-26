@@ -1,4 +1,4 @@
-import Input from "./Input.vue"
+import Input from "../Misc/Inputs/Input.vue"
 
 const inputData = {
    props: {
