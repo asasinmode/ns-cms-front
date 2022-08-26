@@ -1,9 +1,9 @@
 <template>
    <div class="flex flex-col py-8 gap-3 items-center">
-      <Input id="loginEmail" :placeholder="'email'" v-model="inputs.email.value"
+      <Input id="signInEmail" :placeholder="'email'" v-model="inputs.email.value"
          :showError="inputs.email.showError" :errorText="'email cannot be empty'" @input="inputs.email.showError = false"
       />
-      <Input id="loginPassword" :placeholder="'password'" type="password" v-model="inputs.password.value"
+      <Input id="signInPassword" :placeholder="'password'" type="password" v-model="inputs.password.value"
          :showError="inputs.password.showError" :errorText="'password cannot be empty'"
          @keydown.enter="handleLogin" @input="inputs.password.showError = false"
       />
@@ -11,9 +11,9 @@
          {{ errorMessage }}
       </h3>
    </div>
-   <BottomButton @click="handleLogin" :isProcessing="isProcessing">
+   <BottomButton id="signInConfirm" @click="handleLogin" :isProcessing="isProcessing">
       <span class="pointer-events-none" ref="bottomButtonText" v-show="!isProcessing">
-         login
+         sign in
       </span>
    </BottomButton>
 </template>

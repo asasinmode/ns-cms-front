@@ -93,7 +93,7 @@ export default defineComponent({
          return this.max ? this.max.toISOString().split('T')[0] : ''
       },
       isInvalid(){
-         return this.showError || (this.min ? this.modelValue < this.min : true) || (this.max ? this.modelValue > this.max : true)
+         return this.showError || (this.min ? this.modelValue < this.min : false) || (this.max ? this.modelValue > this.max : false)
       }
    }
 })

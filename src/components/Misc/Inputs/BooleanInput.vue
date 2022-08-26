@@ -4,17 +4,17 @@
          <slot />
       </legend>
       <div class="flex flex-row rounded-sm glow-sm w-64">
-         <label :for="`${ name }no`" :class="{ 'selected': !modelValue }"
+         <label :for="`${ name }No`" :class="{ 'selected': !modelValue }"
             class="flexCentered flex-1 h-12 cursor-pointer hover:bg-neon-green/10"
          >
             no
-            <input :id="`${ name }no`" type="radio" :name="name" :value="false" @input="$emit('update:modelValue', false)" :checked="!modelValue">
+            <input :id="`${ name }No`" type="radio" :name="name" :value="false" @input="$emit('update:modelValue', false)" :checked="!modelValue">
          </label>
-         <label :for="`${ name }yes`" :class="{ 'selected': modelValue }"
+         <label :for="`${ name }Yes`" :class="{ 'selected': modelValue }"
             class="flexCentered flex-1 h-12 cursor-pointer hover:bg-neon-green/10 relative"
          >
             yes
-            <input :id="`${ name }yes`" type="radio" :name="name" :value="true" @input="$emit('update:modelValue', true)" :checked="modelValue">
+            <input :id="`${ name }Yes`" type="radio" :name="name" :value="true" @input="$emit('update:modelValue', true)" :checked="modelValue">
             <span v-if="showEmoji && modelValue" aria-hidden class="absolute text-lg translate-x-full translate-y-[1px]">
                😳
             </span>

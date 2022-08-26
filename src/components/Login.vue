@@ -1,10 +1,10 @@
 <template>
    <article class="flex flex-col w-96 glow-sm glow-border glow-gap-horizontal">
       <div class="flex flex-row w-full glow-gap-vertical">
-         <Button @click="switchMode('login')" :selected="isLogin" :disabled="isLogin" class="flex-1 font-semibold">
+         <Button id="loginLogin" @click="switchMode('login')" :selected="isLogin" :disabled="isLogin" class="flex-1 font-semibold">
             login
          </Button>
-         <Button @click="switchMode('register')" :selected="!isLogin" :disabled="!isLogin" class="flex-1 font-semibold">
+         <Button id="loginRegister" @click="switchMode('register')" :selected="!isLogin" :disabled="!isLogin" class="flex-1 font-semibold">
             register
          </Button>
       </div>

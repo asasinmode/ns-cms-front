@@ -15,10 +15,10 @@
          </div>
          <div class="trailingOutline" />
       </div>
-      <span v-show="!isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-white/50">
+      <span v-if="helperText.length > 0" v-show="!isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-white/50">
          {{ helperText }}
       </span>
-      <span v-show="isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-neon-red">
+      <span v-if="errorText.length > 0" v-show="isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-neon-red">
          {{ errorText }}
       </span>
    </div>
@@ -62,7 +62,7 @@ export default defineComponent({
    },
    computed: {
       isInvalid(){
-         return this.showError || this.modelValue.replace(this.pattern, '') != ""
+         return this.showError || this.modelValue.replace(this.pattern, '') !== ""
       }
    }
 })
