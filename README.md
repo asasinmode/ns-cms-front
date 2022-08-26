@@ -2,7 +2,7 @@
 
 frontend do **ns-cms** stworzony jako SPA przy pomocy [Vue](https://vuejs.org/), [TailwindCSS](https://tailwindcss.com/), oraz [Font Awesome](https://fontawesome.com/)
 
-<!-- ### działające demo aplikacji można znaleźć [tutaj](https://ns-cms-front.netlify.app/) -->
+### działające demo aplikacji można znaleźć [tutaj](https://ns-cms-front.netlify.app/)
 
 # instalacja i uruchamianie
 
