@@ -1,0 +1,14 @@
+{
+  "_id": "newSatellite_id",
+  "sideNumber": "testNew",
+  "manufacturer": "Newtory",
+  "model": "new_testellite",
+  "softwareVersion": "1.0.0",
+  "vintage": 2000,
+  "launchDate": "2000-01-01T00:00:00.000Z",
+  "ammunitionLeft": 100,
+  "altitude": 100,
+  "hasAI": true,
+  "createdAt": "2000-01-01T00:00:00.000Z",
+  "updatedAt": "2000-01-01T00:00:00.000Z"
+}

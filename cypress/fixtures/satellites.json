@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "testSatellite1_id",
+    "sideNumber": "test001",
+    "manufacturer": "testfactory",
+    "model": "testellite",
+    "softwareVersion": "1.0.0",
+    "vintage": 2020,
+    "launchDate": "2020-01-01T00:00:00.000Z",
+    "ammunitionLeft": 5,
+    "altitude": 250,
+    "hasAI": false,
+    "createdAt": "2020-01-01T00:00:00.000Z",
+    "updatedAt": "2020-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "testSatellite2_id",
+    "sideNumber": "test002",
+    "manufacturer": "testfacturer",
+    "model": "testellite_v2",
+    "softwareVersion": "2.0.0",
+    "vintage": 2021,
+    "launchDate": "2021-01-01T00:00:00.000Z",
+    "ammunitionLeft": 10,
+    "altitude": 350,
+    "hasAI": true,
+    "createdAt": "2021-01-01T00:00:00.000Z",
+    "updatedAt": "2021-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "testSatellite3_id",
+    "sideNumber": "test003",
+    "manufacturer": "factoryturer",
+    "model": "testellite_v3",
+    "softwareVersion": "3.0.0",
+    "vintage": 2022,
+    "launchDate": "2022-01-01T00:00:00.000Z",
+    "ammunitionLeft": 15,
+    "altitude": 500,
+    "hasAI": false,
+    "createdAt": "2022-01-01T00:00:00.000Z",
+    "updatedAt": "2022-01-01T00:00:00.000Z"
+  }
+]

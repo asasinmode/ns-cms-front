@@ -1,0 +1,7 @@
+{
+   "_id": "test_id",
+   "name": "test name",
+   "token": "testtoken",
+   "country": "testCountry",
+   "hasButton": false
+}
