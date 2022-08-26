@@ -6,9 +6,9 @@
       <Input :id="'registerCountry'" :placeholder="'country*'" v-model="inputs.country.value" :helperText="'*required'"
          :showError="inputs.country.showError" :errorText="'country cannot be empty'" @input="inputs.country.showError = false"
       />
-      <Input :id="'registerEmail'" :placeholder="'email*'" type="email" v-model="inputs.email.value" :helperText="'*required'"
+      <Input :id="'registerEmail'" :placeholder="'email*'" v-model="inputs.email.value" :helperText="'*required'"
          :showError="inputs.email.showError" :errorText="inputs.email.errorText" @input="inputs.email.showError = false"
-         maxlength="255"
+         maxlength="255" :pattern="inputs.email.pattern"
       />
       <Input :id="'registerPassword'" :placeholder="'password*'" type="password" v-model="inputs.password.value"
          :showError="inputs.password.showError" :errorText="passwordInputErrorText" :helperText="'*required'"
@@ -53,7 +53,8 @@ export default defineComponent({
             email: {
                value: "",
                showError: false,
-               errorText: "email cannot be empty"
+               errorText: "email cannot be empty",
+               pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
             },
             password: {
                value: "",
@@ -79,13 +80,7 @@ export default defineComponent({
          this.isProcessing = true
 
          try {
-            const { data } = await this.$http.post('president', {
-               name: this.inputs.name.value,
-               country: this.inputs.country.value,
-               email: this.inputs.email.value,
-               password: this.inputs.password.value,
-               hasButton: this.inputs.hasButton.value
-            })
+            const { data } = await this.$http.post('president', this.inputValues)
 
             this.setPresident(data.name, data.token, data._id, data.country, data.hasButton)
          } catch(e: any){
@@ -108,19 +103,22 @@ export default defineComponent({
          this.isProcessing = false
       },
       validateFields(){
-         const isNameValid = this.inputs.name.value.length > 0
+         const { name, country, email, password } = this.inputValues
+
+         const isNameValid = name.length > 0
          if(!isNameValid){
             this.inputs.name.showError = true
          }
-         const isCountryValid = this.inputs.country.value.length > 0
+         const isCountryValid = country.length > 0
          if(!isCountryValid){
             this.inputs.country.showError = true
          }
-         const isEmailValid = this.inputs.email.value.length > 0 && this.inputs.email.value.length <= 255 && (document.querySelector("#registerEmail") as HTMLInputElement).checkValidity()
+         const isEmailValid = email.length > 0 && email.length <= 255 && email.match(this.inputs.email.pattern) !== null
          if(!isEmailValid){
             this.inputs.email.showError = true
+            this.inputs.email.errorText = email.length === 0 ? "email cannot be empty" : email.length > 255 ? "email cannot be longer than 255" : "invalid email address"
          }
-         const isPasswordValid = this.inputs.password.value.length > 0 && this.inputs.password.value.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+_=])[A-Za-z\d@$!%*#?&^+_=]{6,}$/) !== null
+         const isPasswordValid = password.length > 0 && password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+_=])[A-Za-z\d@$!%*#?&^+_=]{6,}$/) !== null
          if(!isPasswordValid){
             this.inputs.password.showError = true
          }
@@ -149,13 +147,18 @@ export default defineComponent({
          console.error(this.error)
          return "unknown error"
       },
-      emailInputErrorText(){
-         const email = this.inputs.email.value
-         return email.length === 0 ? "email cannot be empty" : email.length > 255 ? "email cannot be longer than 255" : "invalid email address"
-      },
       passwordInputErrorText(){
          const password = this.inputs.password.value
          return password.length === 0 ? 'password cannot be empty' : 'min 6 characters, one letter, one symbol'
+      },
+      inputValues(){
+         return {
+            name: this.inputs.name.value,
+            country: this.inputs.country.value,
+            email: this.inputs.email.value,
+            password: this.inputs.password.value,
+            hasButton: this.inputs.hasButton.value
+         }
       }
    }
 })
