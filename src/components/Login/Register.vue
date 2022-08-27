@@ -7,7 +7,7 @@
          :showError="inputs.country.showError" :errorText="'country cannot be empty'" @input="inputs.country.showError = false"
       />
       <Input :id="'registerEmail'" :placeholder="'email*'" v-model="inputs.email.value" :helperText="'*required'"
-         :showError="inputs.email.showError" :errorText="inputs.email.errorText" @input="inputs.email.showError = false"
+         :showError="inputs.email.showError" :errorText="emailInputErrorText" @input="inputs.email.showError = false"
          maxlength="255" :pattern="inputs.email.pattern"
       />
       <Input :id="'registerPassword'" :placeholder="'password*'" type="password" v-model="inputs.password.value"
@@ -53,7 +53,6 @@ export default defineComponent({
             email: {
                value: "",
                showError: false,
-               errorText: "email cannot be empty",
                pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             },
             password: {
@@ -86,18 +85,6 @@ export default defineComponent({
          } catch(e: any){
             this.error = e
             this.$nextTick(() => this.$shake(this.$refs.bottomButtonText))
-
-            if(e.response?.data?.fields !== undefined){
-               const keys = Object.keys(e.response.data.fields).filter(key => Object.keys(this.inputs).includes(key))
-               
-               const inputs = this.inputs
-               keys.forEach(key => {
-                  this.inputs[key as keyof typeof inputs].showError = true
-                  if(key === 'email'){
-                     this.inputs.email.errorText = e.response.data.fields.email
-                  }
-               })
-            }
          }
 
          this.isProcessing = false
@@ -116,7 +103,6 @@ export default defineComponent({
          const isEmailValid = email.length > 0 && email.length <= 255 && email.match(this.inputs.email.pattern) !== null
          if(!isEmailValid){
             this.inputs.email.showError = true
-            this.inputs.email.errorText = email.length === 0 ? "email cannot be empty" : email.length > 255 ? "email cannot be longer than 255" : "invalid email address"
          }
          const isPasswordValid = password.length > 0 && password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+_=])[A-Za-z\d@$!%*#?&^+_=]{6,}$/) !== null
          if(!isPasswordValid){
@@ -150,6 +136,10 @@ export default defineComponent({
       passwordInputErrorText(){
          const password = this.inputs.password.value
          return password.length === 0 ? 'password cannot be empty' : 'min 6 characters, one letter, one symbol'
+      },
+      emailInputErrorText(){
+         const email = this.inputs.email.value
+         return email.length === 0 ? "email cannot be empty" : email.length > 255 ? "email cannot be longer than 255" : "invalid email address"
       },
       inputValues(){
          return {
