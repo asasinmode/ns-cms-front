@@ -232,11 +232,6 @@ export default defineComponent({
       validateSatellite(){
          const { sideNumber, manufacturer, softwareVersion, vintage, launchDate, ammunitionLeft, altitude } = this.inputValues
 
-         // variable error text
-         const isSoftwareVersionEmpty = softwareVersion.length === 0
-         const isSoftwareVersionValid = softwareVersion.match(this.input.softwareVersion.pattern) !== null
-         this.input.softwareVersion.showError = isSoftwareVersionEmpty || !isSoftwareVersionValid
-
          this.input.sideNumber.showError = sideNumber.length === 0
          this.input.manufacturer.showError = manufacturer.length === 0
          this.input.vintage.showError = vintage < this.minimumVintageYear || vintage > new Date().getFullYear()
@@ -244,13 +239,18 @@ export default defineComponent({
          this.input.ammunitionLeft.showError = ammunitionLeft < 0
          this.input.altitude.showError = altitude < 0
 
-         return Object.keys(this.input).reduce((previous, next) => {
+         const isSoftwareVersionEmpty = softwareVersion.length === 0
+         const isSoftwareVersionValid = softwareVersion.match(this.input.softwareVersion.pattern) !== null
+         this.input.softwareVersion.showError = isSoftwareVersionEmpty || !isSoftwareVersionValid
+
+         // go through all this.input and if any has showError = true return false
+         return Object.values(this.input).reduce((previous, next) => {
             // @ts-ignore
-            if(this.input[next].showError === undefined){
+            if(next.showError === undefined){
                return previous
             }
             // @ts-ignore
-            return previous && !this.input[next].showError
+            return previous && !next.showError
          }, true)
       },
       resetForms(){

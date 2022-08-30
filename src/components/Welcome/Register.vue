@@ -53,7 +53,7 @@ export default defineComponent({
             email: {
                value: "",
                showError: false,
-               pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+               pattern: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
             },
             password: {
                value: "",
@@ -92,24 +92,12 @@ export default defineComponent({
       validateFields(){
          const { name, country, email, password } = this.inputValues
 
-         const isNameValid = name.length > 0
-         if(!isNameValid){
-            this.inputs.name.showError = true
-         }
-         const isCountryValid = country.length > 0
-         if(!isCountryValid){
-            this.inputs.country.showError = true
-         }
-         const isEmailValid = email.length > 0 && email.length <= 255 && email.match(this.inputs.email.pattern) !== null
-         if(!isEmailValid){
-            this.inputs.email.showError = true
-         }
-         const isPasswordValid = password.length > 0 && password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+_=])[A-Za-z\d@$!%*#?&^+_=]{6,}$/) !== null
-         if(!isPasswordValid){
-            this.inputs.password.showError = true
-         }
+         this.inputs.name.showError = name.length === 0
+         this.inputs.country.showError = country.length === 0
+         this.inputs.email.showError = email.length === 0 || email.length > 255 || email.match(this.inputs.email.pattern) === null
+         this.inputs.password.showError = password.length === 0 || password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^+_=])[A-Za-z\d@$!%*#?&^+_=]{6,}$/) === null
 
-         return isNameValid && isCountryValid && isEmailValid && isPasswordValid
+         return Object.values(this.inputs).reduce((previous, next) => previous && !next.showError, true)
       },
       resetTextFields(){
          Object.keys(this.inputs).forEach(key => {

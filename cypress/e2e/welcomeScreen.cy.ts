@@ -33,7 +33,7 @@ describe('welcome screen', () => {
    afterEach(() => {
       sessionStorage.clear()
    })
-   it('registers new user', () => {
+   it.only('registers new user', () => {
       cy.get(sl.switch.register)
          .click()
       cy.get(sl.register.name)
