@@ -20,6 +20,8 @@ export const useUserStore = defineStore('user', {
          this.id = id
          this.country = country
          this.hasButton = hasButton
+
+         sessionStorage.setItem('presidentState', JSON.stringify(this.$state))
       },
       logout(){
          this.name = ""
@@ -27,6 +29,14 @@ export const useUserStore = defineStore('user', {
          this.id = ""
          this.country = ""
          this.hasButton = false
+
+         sessionStorage.clear()
+      },
+      checkLocalStorage(){
+         const sessionState = sessionStorage.getItem('presidentState')
+         if(!sessionState){ return }
+
+         this.$state = JSON.parse(sessionState)
       }
    }
 })

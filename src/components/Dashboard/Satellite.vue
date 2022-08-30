@@ -62,13 +62,24 @@
             </DateInput>
          </div>
          <div class="flexCentered flex-col gap-0">
-            <h3 class="text-neon-red text-lg text-center" v-if="errorMessage.length > 0">
-               {{ errorMessage }}
-            </h3>
-            <OperationButtons :isProcessing="isProcessing" @save="updateSatellite(false)" @create="updateSatellite(true)" @delete="deleteSatellite" :isNew="isNew" />
+            <OperationButtons :id="id" :isDisabled="isProcessing" :isNew="isNew"
+               @save="updateSatellite(false)" @create="updateSatellite(true)" @delete="modal.isOpen = true"
+            />
             <Timestamps v-if="satellite" :updatedAt="satellite.updatedAt" :createdAt="satellite.createdAt" />
          </div>
       </div>
+      <ConfirmModal v-if="showModal"
+         @confirm="deleteSatellite" @close="modal.isOpen = false" @cancel="modal.isOpen = false"
+         :isLoading="isProcessing" :showError="errorMessage.length > 0"
+         :closeFocusTarget="modal.closeFocusTarget"
+      >
+         <template v-if="errorMessage.length === 0">
+            delete satellite {{ satellite?.sideNumber }}
+         </template>
+         <template v-else>
+            {{ errorMessage }}
+         </template>
+      </ConfirmModal>
    </article>
 </template>
 
@@ -81,13 +92,14 @@ import NumberInput from "@/components/Misc/Inputs/NumberInput.vue";
 import DateInput from "../Misc/Inputs/DateInput.vue";
 import OperationButtons from "./OperationButtons.vue"
 import Timestamps from "./Timestamps.vue";
+import ConfirmModal from "../Misc/ConfirmModal.vue";
 import type { ifSatellite } from "@/typings/satellite";
 import { mapState } from "pinia";
 import { useUserStore } from "@/stores/user";
 
 export default defineComponent({
    name: "Satellite",
-   components: { Button, Input, BooleanInput, NumberInput, DateInput, Timestamps, OperationButtons },
+   components: { Button, Input, BooleanInput, NumberInput, DateInput, Timestamps, OperationButtons, ConfirmModal },
    props: {
       id: {
          type: String,
@@ -107,6 +119,10 @@ export default defineComponent({
          minimumVintageYear: 1900,
          isProcessing: false,
          error: <any> undefined,
+         modal: {
+            isOpen: false,
+            closeFocusTarget: <HTMLElement | undefined> undefined
+         },
          input: {
             sideNumber: {
                value: "",
@@ -134,11 +150,11 @@ export default defineComponent({
                showError: false
             },
             ammunitionLeft: {
-               value: 3,
+               value: 0,
                showError: false
             },
             altitude: {
-               value: 500,
+               value: 0,
                showError: false
             },
             hasAI: {
@@ -148,10 +164,12 @@ export default defineComponent({
       }
    },
    beforeMount(){
-      if(this.isNew){ return }
-      Object.keys(this.input).forEach(key => {
-         this.input[key as keyof typeof this.input].value = (this.satellite as ifSatellite)[key as keyof typeof this.satellite]
-      })
+      this.resetForms()
+   },
+   mounted(){
+      if(!this.isNew){
+         this.modal.closeFocusTarget = document.getElementById('delete' + this.id) as HTMLButtonElement
+      }
    },
    methods: {
       async updateSatellite(createNew: boolean){
@@ -183,9 +201,14 @@ export default defineComponent({
             this.$emit(createNew ? "createNew" : "updateMe", satelliteData)
          } catch(e: any){
             this.error = e
+            return
+         } finally {
+            this.isProcessing = false
          }
 
-         this.isProcessing = false
+         if(createNew){
+            this.resetForms()
+         }
       },
       async deleteSatellite(){
          this.error = undefined
@@ -199,9 +222,12 @@ export default defineComponent({
             this.$emit('deleteMe', this.id)
          } catch(e: any){
             this.error = e
+            return
+         } finally {
+            this.isProcessing = false
          }
 
-         this.isProcessing = false
+         this.modal.isOpen = false
       },
       validateSatellite(){
          const { sideNumber, manufacturer, softwareVersion, vintage, launchDate, ammunitionLeft, altitude } = this.inputValues
@@ -226,6 +252,24 @@ export default defineComponent({
             // @ts-ignore
             return previous && !this.input[next].showError
          }, true)
+      },
+      resetForms(){
+         if(!this.isNew){
+            Object.keys(this.input).forEach(key => {
+               this.input[key as keyof typeof this.input].value = (this.satellite as ifSatellite)[key as keyof typeof this.satellite]
+            })
+            return
+         }
+         
+         this.input.sideNumber.value = ""
+         this.input.manufacturer.value = ""
+         this.input.softwareVersion.value = ""
+         this.input.model.value = ""
+         this.input.vintage.value = new Date().getFullYear()
+         this.input.launchDate.value = new Date()
+         this.input.ammunitionLeft.value = 3
+         this.input.altitude.value = 300
+         this.input.hasAI.value = false
       }
    },
    computed: {
@@ -272,6 +316,9 @@ export default defineComponent({
             : responseStatus === 404 ? "not found. try to refresh page"
             : responseStatus === 500 ? "unknown error has occurred"
             : "invalid satellite data"
+      },
+      showModal(){
+         return !this.isNew && this.modal.isOpen
       }
    }
 })

@@ -2,13 +2,13 @@ import { login } from "./login"
 
 const sl = {
    switch: {
-      login: "#loginLogin",
-      register: "#loginRegister"
+      login: "#welcomeLogin",
+      register: "#welcomeRegister"
    },
-   signin: {
-      email: "#signInEmail",
-      password: "#signInPassword",
-      confirm: "#signInConfirm"
+   login: {
+      email: "#loginEmail",
+      password: "#loginPassword",
+      confirm: "#loginConfirm"
    },
    register: {
       name: "#registerName",
@@ -23,12 +23,15 @@ const sl = {
    }
 }
 
-describe('login screen', () => {
+describe('welcome screen', () => {
    beforeEach(() => {
-      cy.intercept('POST', '/president', { fixture: 'president.json' })
-      cy.intercept('POST', '/president/login', { fixture: 'president.json' })
+      cy.intercept('POST', '/presidents', { fixture: 'presidents.json' })
+      cy.intercept('POST', '/presidents/login', { fixture: 'presidents.json' })
       cy.intercept('GET', '/satellites', { fixture: "satellites.json" })
       cy.visit('/')
+   })
+   afterEach(() => {
+      sessionStorage.clear()
    })
    it('registers new user', () => {
       cy.get(sl.switch.register)

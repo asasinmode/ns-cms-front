@@ -79,6 +79,11 @@ export default defineComponent({
          this.inputValue = limitedValue.toString()
          this.$emit('update:modelValue', limitedValue)
       }
+   },
+   watch: {
+      modelValue(){
+         this.inputValue = this.modelValue.toString()
+      }
    }
 })
 </script>

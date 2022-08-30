@@ -1,50 +1,50 @@
-import Login from "../Login.vue"
+import WelcomeScreen from "../WelcomeScreen.vue"
 
 const errorSpanSelector = 'span.text-neon-red'
 
 describe('<Login />', () => {
    it('renders switch buttons', () => {
-      cy.mount(Login)
-         .get('#loginLogin')
+      cy.mount(WelcomeScreen)
+         .get('#welcomeLogin')
          .should('be.visible')
-         .get('#loginRegister')
+         .get('#welcomeRegister')
          .should('be.visible')
    })
    it('switches between login and register', () => {
-      cy.mount(Login)
-         .get('#loginRegister')
+      cy.mount(WelcomeScreen)
+         .get('#welcomeRegister')
          .click()
          .get('#registerConfirm')
-         .get('#loginLogin')
+         .get('#welcomeLogin')
          .click()
-         .get('#signInConfirm')
+         .get('#loginConfirm')
    })
    describe("sign in", () => {
       describe('renders inputs', () => {
          beforeEach(() => {
-            cy.mount(Login)
+            cy.mount(WelcomeScreen)
          })
          it('email', () => {
-            cy.get('#signInEmail')
+            cy.get('#loginEmail')
          })
          it('password', () => {
-            cy.get('#signInPassword')
+            cy.get('#loginPassword')
          })
       })
       describe('rejects', () => {
          beforeEach(() => {
-            cy.mount(Login)
-               .get('#signInConfirm')
+            cy.mount(WelcomeScreen)
+               .get('#loginConfirm')
                .click()
          })
          it('empty email', () => {
-            cy.get('#signInEmail')
+            cy.get('#loginEmail')
                .parent()
                .find(errorSpanSelector)
                .should('be.visible')
          })
          it('empty password', () => {
-            cy.get('#signInPassword')
+            cy.get('#loginPassword')
                .parent()
                .find(errorSpanSelector)
                .should('be.visible')
@@ -53,8 +53,8 @@ describe('<Login />', () => {
    })
    describe('register', () => {
       beforeEach(() => {
-         cy.mount(Login)
-            .get('#loginRegister')
+         cy.mount(WelcomeScreen)
+            .get('#welcomeRegister')
             .click()
       })
       describe('renders inputs', () => {

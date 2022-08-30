@@ -79,7 +79,7 @@ export default defineComponent({
          this.isProcessing = true
 
          try {
-            const { data } = await this.$http.post('president', this.inputValues)
+            const { data } = await this.$http.post('presidents', this.inputValues)
 
             this.setPresident(data.name, data.token, data._id, data.country, data.hasButton)
          } catch(e: any){

@@ -23,10 +23,12 @@ const aiLabels = (satelliteWidgetExpandButtonID: string) => {
 
 describe('navigation', () => {
    it('logs out', () => {
+      cy.intercept('GET', '/satellites', { fixture: 'satellites.json' })
       cy.visit('/')
       login()
       cy.get(sl.logout)
          .click()
+      sessionStorage.clear()
       cy.get('article')
          .contains('login')
    })
@@ -34,10 +36,14 @@ describe('navigation', () => {
 
 describe('satellites', () => {
    beforeEach(() => {
+      cy.intercept('GET', '/satellites', { fixture: 'satellites.json' })
       cy.intercept('POST', '/satellites', { fixture: 'newSatellite.json' })
-      cy.intercept('DELETE', '/satellites/*', { statusCode: 204 })
+      cy.intercept('DELETE', '/satellites/*', { statusCode: 204 }).as('deleteSatellite')
       cy.visit('/')
       login()
+   })
+   afterEach(() => {
+      sessionStorage.clear()
    })
    it('renders satellite widgets', () => {
       cy.get('button[id^="buttonExpand"]')
@@ -89,6 +95,9 @@ describe('satellites', () => {
             .siblings('div')
             .contains('delete')
             .click()
+         cy.get('#modalConfirmButton')
+            .click()
+            .wait('@deleteSatellite')
          cy.get('button[id^="buttonExpand"]')
             .then((buttons) => {
                assert(buttons.length < originalLength, 'less satellite buttons than originally')

@@ -1,5 +1,5 @@
 <template>
-   <button class="h-12" :class="{ 'selected': selected }">
+   <button class="h-12" :class="{ 'selected': selected }" ref="me">
       <slot />
    </button>
 </template>
@@ -13,6 +13,20 @@ export default defineComponent({
       selected: {
          type: Boolean,
          default: false
+      },
+      focusOnMounted: {
+         type: Boolean,
+         defualt: false
+      }
+   },
+   mounted(){
+      this.focusOnMounted && this.focusMe()
+   },
+   methods: {
+      focusMe(){
+         this.$nextTick(() => {
+            this.$refs.me.focus()   
+         })
       }
    }
 })

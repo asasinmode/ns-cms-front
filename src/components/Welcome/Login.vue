@@ -1,9 +1,9 @@
 <template>
    <div class="flex flex-col py-8 gap-3 items-center">
-      <Input id="signInEmail" :placeholder="'email'" v-model="inputs.email.value"
+      <Input id="loginEmail" :placeholder="'email'" v-model="inputs.email.value"
          :showError="inputs.email.showError" :errorText="'email cannot be empty'" @input="inputs.email.showError = false"
       />
-      <Input id="signInPassword" :placeholder="'password'" type="password" v-model="inputs.password.value"
+      <Input id="loginPassword" :placeholder="'password'" type="password" v-model="inputs.password.value"
          :showError="inputs.password.showError" :errorText="'password cannot be empty'"
          @keydown.enter="handleLogin" @input="inputs.password.showError = false"
       />
@@ -11,7 +11,7 @@
          {{ errorMessage }}
       </h3>
    </div>
-   <BottomButton id="signInConfirm" @click="handleLogin" :isProcessing="isProcessing">
+   <BottomButton id="loginConfirm" @click="handleLogin" :isProcessing="isProcessing">
       <span class="pointer-events-none" ref="bottomButtonText" v-show="!isProcessing">
          sign in
       </span>
@@ -26,7 +26,7 @@ import BottomButton from "./BottomButton.vue";
 import Input from "@/components/Misc/Inputs/Input.vue";
 
 export default defineComponent({
-   name: "SignIn",
+   name: "Login",
    components: { BottomButton, Input },
    data(){
       return {
@@ -55,7 +55,7 @@ export default defineComponent({
          this.isProcessing = true
 
          try {
-            const { data } = await this.$http.post('president/login', {
+            const { data } = await this.$http.post('presidents/login', {
                email: this.inputs.email.value,
                password: this.inputs.password.value
             })

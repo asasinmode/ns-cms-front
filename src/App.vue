@@ -1,20 +1,26 @@
 <template>
    <Dashboard v-if="isLoggedIn" />
-   <Login v-else />
+   <WelcomeScreen v-else />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { mapState } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useUserStore } from "./stores/user";
-import Login from "@/components/Login.vue";
+import WelcomeScreen from "@/components/WelcomeScreen.vue";
 import Dashboard from "@/components/Dashboard.vue";
 
 export default defineComponent({
    name: "App",
-   components: { Login, Dashboard },
+   components: { WelcomeScreen, Dashboard },
+   methods: {
+      ...mapActions(useUserStore, ['checkLocalStorage'])
+   },
    computed: {
       ...mapState(useUserStore, ['isLoggedIn'])
+   },
+   mounted(){
+      this.checkLocalStorage()
    }
 })
 </script>
