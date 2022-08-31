@@ -7,17 +7,18 @@
          <input :id="id" :value="inputValue" @input="handleInput" @focusout="setValue" v-bind="$attrs"
             class="bg-transparent border-[1px] border-solid border-white/50 rounded-md h-[50px] w-16
                hover:border-white focus:border-neon-green focus:border-2 appearance-none text-center"
-            :class="{ '!border-neon-red': showError }"
+            :class="{ '!border-neon-red': v$.$error }"
          >
       </label>
-      <span v-show="showError" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red">
+      <span v-show="v$.$error" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red">
          {{ errorText }}
       </span>
    </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
+import type { BaseValidation } from "@vuelidate/core";
 
 export default defineComponent({
    inheritAttrs: false,
@@ -35,13 +36,9 @@ export default defineComponent({
          type: Number,
          default: 0
       },
-      errorText: {
-         type: String,
-         default: ""
-      },
-      showError: {
-         type: Boolean,
-         default: false
+      v$: {
+         type: Object as PropType<BaseValidation>,
+         required: true
       },
       max: Number
    },
@@ -78,6 +75,14 @@ export default defineComponent({
 
          this.inputValue = limitedValue.toString()
          this.$emit('update:modelValue', limitedValue)
+      }
+   },
+   computed: {
+      errorText(){
+         const errors = this.v$.$errors
+         if(!errors.length){ return "" }
+
+         return errors[0].$message.toString()
       }
    },
    watch: {

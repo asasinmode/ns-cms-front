@@ -6,7 +6,10 @@ const inputData = {
       modelValue: currentDate,
       id: "test",
       min: new Date('01 Jan 1950 00:00:00 GMT'),
-      max: new Date('01 Jan 2050 00:00:00 GMT')
+      max: new Date('01 Jan 2050 00:00:00 GMT'),
+      v$: {
+         $errors: []
+      }
    }
 }
 
@@ -20,8 +23,12 @@ describe('<DateInput />', () => {
       cy.mount(DateInput, {
          props: {
             ...inputData.props,
-            showError: true,
-            errorText: 'test error'
+            v$: {
+               $error: true,
+               $errors: [{
+                  $message: "test error"
+               }]
+            }
          }
       })
          .get('span')

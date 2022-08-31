@@ -1,10 +1,10 @@
 <template>
    <div class="flex flex-col py-8 gap-3 items-center">
       <Input id="loginEmail" :placeholder="'email'" v-model="email"
-         :showError="v$.email.$error" :errorText="'cannot be empty'"
+         :v$="v$.email"
       />
       <Input id="loginPassword" :placeholder="'password'" type="password" v-model="password"
-         :showError="v$.password.$error" :errorText="'cannot be empty'"
+         :v$="v$.password"
          @keydown.enter="handleLogin"
       />
       <h3 class="text-neon-red text-lg" v-if="errorMessage.length > 0">
@@ -23,7 +23,7 @@ import { defineComponent } from "vue";
 import { mapActions } from "pinia";
 import { useUserStore } from "@/stores/user";
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, helpers } from "@vuelidate/validators";
 import BottomButton from "./BottomButton.vue";
 import Input from "@/components/Misc/Inputs/Input.vue";
 
@@ -91,10 +91,10 @@ export default defineComponent({
    validations(){
       return {
          email: {
-            required
+            required: helpers.withMessage('cannot be empty', required)
          },
          password: {
-            required
+            required: helpers.withMessage('cannot be empty', required)
          }
       }
    }

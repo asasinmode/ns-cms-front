@@ -1,9 +1,8 @@
 <template>
-   <div class="inputContainer flexCentered h-fit"
-      :class="{ '!mb-5': helperText.length || errorText.length,
-         'error': isInvalid }"
+   <div class="inputContainer flexCentered h-fit mb-5"
+      :class="{ 'error': v$.$error }"
    >
-      <input :id="id" placeholder=" " :value="modelValue" v-bind="$attrs" :pattern="pattern.source"
+      <input :id="id" placeholder=" " :value="modelValue" v-bind="$attrs"
          @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
       />
       <div class="inputLabelContainer">
@@ -15,17 +14,18 @@
          </div>
          <div class="trailingOutline" />
       </div>
-      <span v-if="helperText.length > 0" v-show="!isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-white/50">
+      <span v-if="helperText.length > 0" v-show="!v$.$error" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-white/50">
          {{ helperText }}
       </span>
-      <span v-if="errorText.length > 0" v-show="isInvalid" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-neon-red">
+      <span v-show="v$.$error" class="flex pointer-events-none text-[0.8em] absolute left-4 bottom-0 translate-y-full text-neon-red">
          {{ errorText }}
       </span>
    </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import type { BaseValidation } from "@vuelidate/core"
+import { defineComponent, type PropType } from "vue"
 
 export default defineComponent({
    inheritAttrs: false,
@@ -39,19 +39,11 @@ export default defineComponent({
          type: String,
          default: ""
       },
-      showError: {
-         type: Boolean,
-         default: false
-      },
-      pattern: {
-         type: RegExp,
-         default: /./g
+      v$: {
+         type: Object as PropType<BaseValidation>,
+         required: true
       },
       helperText: {
-         type: String,
-         default: ""
-      },
-      errorText: {
          type: String,
          default: ""
       },
@@ -61,8 +53,11 @@ export default defineComponent({
       }
    },
    computed: {
-      isInvalid(){
-         return this.showError || this.modelValue.replace(this.pattern, '') !== ""
+      errorText(){
+         const errors = this.v$.$errors
+         if(!errors.length){ return "" }
+
+         return errors[0].$message.toString()
       }
    }
 })

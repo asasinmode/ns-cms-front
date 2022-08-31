@@ -7,10 +7,10 @@
          <input :id="id" type="date" required :value="parsedDate" @input="handleInput" @focusout="setValue"
             class="bg-transparent border-[1px] border-solid border-white/50 rounded-md pl-5 pr-2 h-[50px]
                hover:border-white focus:border-neon-green focus:border-2"
-               :class="{ '!border-neon-red': isInvalid }"
+               :class="{ '!border-neon-red': v$.$error }"
             :min="parsedMin" :max="parsedMax" ref="input"
          >
-         <span v-show="isInvalid" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red
+         <span v-show="v$.$error" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red
             absolute left-1 bottom-0 translate-y-full lg:left-full lg:translate-y-2 lg:translate-x-2"
          >
             {{ errorText }}
@@ -20,7 +20,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
+import type { BaseValidation } from "@vuelidate/core";
 
 export default defineComponent({
    name: "DateInput",
@@ -33,16 +34,12 @@ export default defineComponent({
          type: String,
          required: true
       },
+      v$: {
+         type: Object as PropType<BaseValidation>,
+         required: true
+      },
       min: Date,
       max: Date,
-      errorText: {
-         type: String,
-         default: ""
-      },
-      showError: {
-         type: Boolean,
-         default: false
-      }
    },
    data(){
       return {
@@ -94,8 +91,11 @@ export default defineComponent({
       parsedMax(){
          return this.max ? this.max.toISOString().split('T')[0] : ''
       },
-      isInvalid(){
-         return this.showError || (this.min ? this.modelValue < this.min : false) || (this.max ? this.modelValue > this.max : false)
+      errorText(){
+         const errors = this.v$.$errors
+         if(!errors.length){ return "" }
+
+         return errors[0].$message.toString()
       }
    }
 })

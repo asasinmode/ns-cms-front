@@ -1,17 +1,17 @@
 <template>
    <div class="flex flex-col py-8 gap-3 items-center">
       <Input :id="'registerName'" :placeholder="'name*'" v-model="name" :helperText="'*required'"
-         :showError="v$.name.$error" :errorText="'cannot be empty'"
+         :v$="v$.name"
       />
       <Input :id="'registerCountry'" :placeholder="'country*'" v-model="country" :helperText="'*required'"
-         :showError="v$.country.$error" :errorText="'cannot be empty'"
+         :v$="v$.country"
       />
       <Input :id="'registerEmail'" :placeholder="'email*'" v-model="email" :helperText="'*required'"
-         :showError="v$.email.$error" :errorText="emailErrorText"
-         maxlength="255" :pattern="emailPattern"
+         :v$="v$.email"
+         maxlength="255"
       />
-      <Input :id="'registerPassword'" :placeholder="'password*'" type="password" v-model="password"
-         :showError="v$.password.$error" :errorText="passwordErrorText" :helperText="'*required'"
+      <Input :id="'registerPassword'" :placeholder="'password*'" v-model="password" :helperText="'*required'"
+         :v$="v$.password" type="password"
          @keydown.enter="handleLogin" :pattern="passwordPattern"
       />
       <BooleanInput v-model="hasButton" :name="`hasButton`" class="w-64 mt-2" :showEmoji="true">
@@ -104,18 +104,6 @@ export default defineComponent({
          console.error(this.error)
          return "unknown error"
       },
-      passwordErrorText(){
-         const errors = this.v$.password.$errors
-         if(!errors.length){ return "" }
-
-         return errors[0].$message.toString()
-      },
-      emailErrorText(){
-         const errors = this.v$.email.$errors
-         if(!errors.length){ return "" }
-
-         return errors[0].$message.toString()
-      },
       inputValues(){
          return {
             name: this.name,
@@ -129,10 +117,10 @@ export default defineComponent({
    validations(){
       return {
          name: {
-            required
+            required: helpers.withMessage('cannot be empty', required)
          },
          country: {
-            required
+            required: helpers.withMessage('cannot be empty', required)
          },
          email: {
             required: helpers.withMessage('cannot be empty', required),

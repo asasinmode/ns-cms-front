@@ -3,7 +3,10 @@ import Input from "../Misc/Inputs/Input.vue"
 const inputData = {
    props: {
       placeholder: 'test',
-      id: 'test'
+      id: 'test',
+      v$: {
+         $errors: []
+      }
    }
 }
 
@@ -28,13 +31,17 @@ describe('<Input />', () => {
       const errorData = {
          props: {
             ...inputData.props,
-            errorText: "error text",
-            showError: true
+            v$: {
+               $error: true,
+               $errors: [{
+                  $message: "test error"
+               }]
+            }
          }
       }
       cy.mount(Input, errorData)
          .get('span')
-         .should('have.text', 'error text')
+         .should('have.text', 'test error')
          .should('have.class', 'text-neon-red')
    })
 })

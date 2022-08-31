@@ -2,35 +2,35 @@
    <div class="flex flex-col md:flex-row gap-3 md:gap-10">
       <div class="flex flex-col xl:flex-row gap-3 xl:gap-10">
          <Input :id="`sideNumber${ id }`" :placeholder="'side number'" v-model="inputs.sideNumber"
-            :showError="v$.inputs.sideNumber.$error" :errorText="'cannot be empty'"
+            :v$="v$.inputs.sideNumber"
          />
          <Input :id="`manufacturer${ id }`" :placeholder="'manufacturer'" v-model="inputs.manufacturer"
-            :showError="v$.inputs.manufacturer.$error" :errorText="'cannot be empty'"
+            :v$="v$.inputs.manufacturer"
          />
       </div>
       <div class="flex flex-col xl:flex-row gap-3 xl:gap-10">
          <Input :id="`softwareVersion${ id }`" :placeholder="'software version'" v-model="inputs.softwareVersion"
-            :showError="v$.inputs.softwareVersion.$error" :errorText="softwareVersionErrorText"
+            :v$="v$.inputs.softwareVersion"
             :pattern="softwareVersionPattern"
          />
          <Input :id="`model${ id }`" :placeholder="'model'" v-model="inputs.model"
-            :showError="v$.inputs.model.$error" :errorText="'cannot be empty'"
+            :v$="v$.inputs.model"
          />
       </div>
    </div>
    <div class="flex flex-col gap-3 max-w-lg md:flex-row md:w-full md:justify-center">
       <NumberInput :id="`vintage${ id }`" v-model="inputs.vintage" :min="minimumVintageYear" :max="new Date().getFullYear()"
-         :showError="v$.inputs.vintage.$error" :errorText="vintageErrorText"
+         :v$="v$.inputs.vintage"
       >
          vintage:
       </NumberInput>
       <NumberInput :id="`ammunitionLeft${ id }`" v-model="inputs.ammunitionLeft" :min="0"
-         :showError="v$.inputs.ammunitionLeft.$error" :errorText="'must be a positive integer'"
+         :v$="v$.inputs.ammunitionLeft"
       >
          ammunition left:
       </NumberInput>
       <NumberInput :id="`altitude${ id }`" v-model="inputs.altitude" :min="0"
-         :showError="v$.inputs.altitude.$error" :errorText="'must be a positive integer'"
+         :v$="v$.inputs.altitude"
       >
          altitude (km):
       </NumberInput>
@@ -42,7 +42,7 @@
          does it have AI?
       </BooleanInput>
       <DateInput :id="`launchDate${ id }`" v-model="inputs.launchDate" :min="minimumLaunchDate" :max="new Date()"
-         :showError="v$.inputs.launchDate.$error" :errorText="'must be between 1970 and now'"
+         :v$="v$.inputs.launchDate"
          class="flex-1 flex items-center justify-center lg:justify-start"
       >
          launch date:
@@ -131,49 +131,41 @@ export default defineComponent({
             altitude: this.inputs.altitude,
             hasAI: this.inputs.hasAI
          }
-      },
-      softwareVersionErrorText(){
-         const errors = this.v$.inputs.softwareVersion.$errors
-         if(!errors.length){ return "" }
-
-         return errors[0].$message.toString()
-      },
-      vintageErrorText(){
-         return `must be between ${ this.minimumVintageYear } and ${ new Date().getFullYear() }`
       }
    },
    validations(){
+      const currentYear = new Date().getFullYear()
       return {
          inputs: {
             sideNumber: {
-               required
+               required: helpers.withMessage('cannot be empty', required),
             },
             manufacturer: {
-               required
+               required: helpers.withMessage('cannot be empty', required),
             },
             model: {
-               required
+               required: helpers.withMessage('cannot be empty', required),
             },
             softwareVersion: {
                required: helpers.withMessage('cannot be empty', required),
                mustBeValid: helpers.withMessage("must be valid semver", matchesRegex(this.softwareVersionPattern))
             },
             vintage: {
-               required,
-               minValue: minValue(this.minimumVintageYear),
-               maxValue: maxValue(new Date().getFullYear())
+               required: helpers.withMessage('cannot be empty', required),
+               minValue: helpers.withMessage(`must be greater than ${ this.minimumVintageYear }`, minValue(this.minimumVintageYear)),
+               maxValue: helpers.withMessage(`must be lesser than ${ currentYear }`, maxValue(currentYear))
             },
             launchDate: {
-               required,
-               isValid: isLaunchDateValid(this.minimumLaunchDate)
+               required: helpers.withMessage('cannot be empty', required),
+               isValid: helpers.withMessage('must be between 1970 and now', isLaunchDateValid(this.minimumLaunchDate))
             },
             ammunitionLeft: {
-               required,
-               minValue: minValue(0)
+               required: helpers.withMessage('cannot be empty', required),
+               minValue: helpers.withMessage('must be a positive integer', minValue(0))
             },
             altitude: {
-               required,
-               minValue: minValue(0)
+               required: helpers.withMessage('cannot be empty', required),
+               minValue: helpers.withMessage('must be a positive integer', minValue(0))
             }
          }
       }

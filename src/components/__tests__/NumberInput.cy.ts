@@ -4,7 +4,10 @@ const inputData = {
    props: {
       modelValue: 5,
       min: 3,
-      max: 300
+      max: 300,
+      v$: {
+         $errors: []
+      }
    }
 }
 
@@ -35,8 +38,12 @@ describe('<NumberInput />', () => {
       const errorData = {
          props: {
             modelValue: 5,
-            errorText: 'test error',
-            showError: true
+            v$: {
+               $error: true,
+               $errors: [{
+                  $message: "test error"
+               }]
+            }
          }
       }
       cy.mount(NumberInput, errorData)
