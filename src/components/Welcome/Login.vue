@@ -26,6 +26,7 @@ import useVuelidate from "@vuelidate/core";
 import { required, helpers } from "@vuelidate/validators";
 import BottomButton from "./BottomButton.vue";
 import Input from "@/components/Misc/Inputs/Input.vue";
+import { requiredWithMessage } from "@/helpers/validation";
 
 export default defineComponent({
    name: "Login",
@@ -91,10 +92,10 @@ export default defineComponent({
    validations(){
       return {
          email: {
-            required: helpers.withMessage('cannot be empty', required)
+            required: requiredWithMessage
          },
          password: {
-            required: helpers.withMessage('cannot be empty', required)
+            required: requiredWithMessage
          }
       }
    }

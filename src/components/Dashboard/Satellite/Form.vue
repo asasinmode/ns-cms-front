@@ -53,9 +53,9 @@
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
 import useVuelidate from "@vuelidate/core";
-import { required, helpers, minValue, maxValue } from "@vuelidate/validators";
+import { helpers, minValue, maxValue } from "@vuelidate/validators";
 import type { ifSatelliteForm } from "@/typings/satellite";
-import { matchesRegex } from "@/helpers/validation";
+import { matchesRegex, requiredWithMessage } from "@/helpers/validation";
 import Input from "@/components/Misc/Inputs/Input.vue"
 import BooleanInput from "@/components/Misc/Inputs/BooleanInput.vue"
 import NumberInput from "@/components/Misc/Inputs/NumberInput.vue";
@@ -138,33 +138,33 @@ export default defineComponent({
       return {
          inputs: {
             sideNumber: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage,
             },
             manufacturer: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage
             },
             model: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage
             },
             softwareVersion: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage,
                mustBeValid: helpers.withMessage("must be valid semver", matchesRegex(this.softwareVersionPattern))
             },
             vintage: {
-               required: helpers.withMessage('cannot be empty', required),
-               minValue: helpers.withMessage(`must be greater than ${ this.minimumVintageYear }`, minValue(this.minimumVintageYear)),
-               maxValue: helpers.withMessage(`must be lesser than ${ currentYear }`, maxValue(currentYear))
+               required: requiredWithMessage,
+               minValue: helpers.withMessage(`min ${ this.minimumVintageYear }`, minValue(this.minimumVintageYear)),
+               maxValue: helpers.withMessage(`max ${ currentYear }`, maxValue(currentYear))
             },
             launchDate: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage,
                isValid: helpers.withMessage('must be between 1970 and now', isLaunchDateValid(this.minimumLaunchDate))
             },
             ammunitionLeft: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage,
                minValue: helpers.withMessage('must be a positive integer', minValue(0))
             },
             altitude: {
-               required: helpers.withMessage('cannot be empty', required),
+               required: requiredWithMessage,
                minValue: helpers.withMessage('must be a positive integer', minValue(0))
             }
          }

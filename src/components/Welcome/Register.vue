@@ -37,7 +37,7 @@ import { required, maxLength, minLength, helpers } from "@vuelidate/validators";
 import BottomButton from "./BottomButton.vue";
 import Input from "@/components/Misc/Inputs/Input.vue";
 import BooleanInput from "@/components/Misc/Inputs/BooleanInput.vue";
-import { matchesRegex } from "@/helpers/validation";
+import { matchesRegex, requiredWithMessage } from "@/helpers/validation";
 
 export default defineComponent({
    name: "Register",
@@ -117,18 +117,18 @@ export default defineComponent({
    validations(){
       return {
          name: {
-            required: helpers.withMessage('cannot be empty', required)
+            required: requiredWithMessage
          },
          country: {
-            required: helpers.withMessage('cannot be empty', required)
+            required: requiredWithMessage
          },
          email: {
-            required: helpers.withMessage('cannot be empty', required),
+            required: requiredWithMessage,
             maxLength: helpers.withMessage('max 255 characters', maxLength(255)),
             mustBeValid: helpers.withMessage('must be valid email', matchesRegex(this.emailPattern))
          },
          password: {
-            required: helpers.withMessage('cannot be empty', required),
+            required: requiredWithMessage,
             minLength: helpers.withMessage('min 6 characters', minLength(6)),
             mustBeSecure: helpers.withMessage('at least one letter, one symbol', matchesRegex(this.passwordPattern))
          }
