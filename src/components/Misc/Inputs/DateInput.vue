@@ -1,6 +1,6 @@
 <template>
    <div>
-      <label :for="id" class="flex flex-col items-center w-fit">
+      <label :for="id" class="flex flex-col items-center w-fit relative">
          <span>
             <slot />
          </span>
@@ -10,10 +10,12 @@
                :class="{ '!border-neon-red': isInvalid }"
             :min="parsedMin" :max="parsedMax" ref="input"
          >
+         <span v-show="isInvalid" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red
+            absolute left-1 bottom-0 translate-y-full lg:left-full lg:translate-y-2 lg:translate-x-2"
+         >
+            {{ errorText }}
+         </span>
       </label>
-      <span v-show="isInvalid" class="flexCentered text-center pointer-events-none text-[0.8em] text-neon-red">
-         {{ errorText }}
-      </span>
    </div>
 </template>
 

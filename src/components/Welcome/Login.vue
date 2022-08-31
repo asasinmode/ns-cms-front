@@ -1,11 +1,11 @@
 <template>
    <div class="flex flex-col py-8 gap-3 items-center">
-      <Input id="loginEmail" :placeholder="'email'" v-model="inputs.email.value"
-         :showError="inputs.email.showError" :errorText="'email cannot be empty'" @input="inputs.email.showError = false"
+      <Input id="loginEmail" :placeholder="'email'" v-model="email"
+         :showError="v$.email.$error" :errorText="'cannot be empty'"
       />
-      <Input id="loginPassword" :placeholder="'password'" type="password" v-model="inputs.password.value"
-         :showError="inputs.password.showError" :errorText="'password cannot be empty'"
-         @keydown.enter="handleLogin" @input="inputs.password.showError = false"
+      <Input id="loginPassword" :placeholder="'password'" type="password" v-model="password"
+         :showError="v$.password.$error" :errorText="'cannot be empty'"
+         @keydown.enter="handleLogin"
       />
       <h3 class="text-neon-red text-lg" v-if="errorMessage.length > 0">
          {{ errorMessage }}
@@ -22,25 +22,24 @@
 import { defineComponent } from "vue";
 import { mapActions } from "pinia";
 import { useUserStore } from "@/stores/user";
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import BottomButton from "./BottomButton.vue";
 import Input from "@/components/Misc/Inputs/Input.vue";
 
 export default defineComponent({
    name: "Login",
    components: { BottomButton, Input },
+   setup(){
+      return {
+         v$: useVuelidate({ $lazy: true })
+      }
+   },
    data(){
       return {
          isProcessing: false,
-         inputs: {
-            email: {
-               value: "",
-               showError: false
-            },
-            password: {
-               value: "",
-               showError: false
-            }
-         },
+         email: "",
+         password: "",
          error: <any> undefined
       }
    },
@@ -49,15 +48,15 @@ export default defineComponent({
       async handleLogin(){
          this.error = undefined
 
-         const areFieldsValid = this.validateFields()
+         const areFieldsValid = await this.v$.$validate()
          if(!areFieldsValid){ return }
 
          this.isProcessing = true
 
          try {
             const { data } = await this.$http.post('presidents/login', {
-               email: this.inputs.email.value,
-               password: this.inputs.password.value
+               email: this.email,
+               password: this.password
             })
 
             this.setPresident(data.name, data.token, data._id, data.country, data.hasButton)
@@ -68,23 +67,9 @@ export default defineComponent({
 
          this.isProcessing = false
       },
-      validateFields(){
-         const isEmailValid = this.inputs.email.value.length > 0
-         if(!isEmailValid){
-            this.inputs.email.showError = true
-         }
-         const isPasswordValid = this.inputs.password.value.length > 0
-         if(!isPasswordValid){
-            this.inputs.password.showError = true
-         }
-
-         return isEmailValid && isPasswordValid
-      },
       resetTextFields(){
-         Object.keys(this.inputs).forEach(key => {
-            this.inputs[key as keyof typeof this.inputs].value = ""
-            this.inputs[key as keyof typeof this.inputs].showError = false
-         })
+         this.email = ""
+         this.password = ""
       }
    },
    computed: {
@@ -101,6 +86,16 @@ export default defineComponent({
 
          console.error(this.error)
          return "unknown error"
+      }
+   },
+   validations(){
+      return {
+         email: {
+            required
+         },
+         password: {
+            required
+         }
       }
    }
 })

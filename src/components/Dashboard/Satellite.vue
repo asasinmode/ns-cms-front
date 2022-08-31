@@ -12,55 +12,7 @@
          </span>
       </button>
       <div v-show="isExpanded" class="flex flex-col items-center pt-4 pb-3 gap-4">
-         <div class="flex flex-col md:flex-row gap-3 md:gap-10">
-            <div class="flex flex-col xl:flex-row gap-3 xl:gap-10">
-               <Input :id="`sideNumber${ id }`" :placeholder="'side number'" v-model="input.sideNumber.value"
-                  :showError="input.sideNumber.showError" :errorText="'side number cannot be empty'"
-                  @input="input.sideNumber.showError = false"
-               />
-               <Input :id="`manufacturer${ id }`" :placeholder="'manufacturer'" v-model="input.manufacturer.value"
-                  :showError="input.manufacturer.showError" :errorText="'manufacturer cannot be empty'"
-                  @input="input.manufacturer.showError = false"
-               />
-            </div>
-            <div class="flex flex-col xl:flex-row gap-3 xl:gap-10">
-               <Input :id="`softwareVersion${ id }`" :placeholder="'software version'" v-model="input.softwareVersion.value"
-                  :showError="input.softwareVersion.showError" :errorText="softwareVersionInputErrorText"
-                  :pattern="input.softwareVersion.pattern" @input="input.softwareVersion.showError = false"
-               />
-               <Input :id="`model${ id }`" :placeholder="'model'" v-model="input.model.value" />
-            </div>
-         </div>
-         <div class="flex flex-col gap-3 max-w-lg md:flex-row md:w-full md:justify-center">
-            <NumberInput :id="`vintage${ id }`" v-model="input.vintage.value" :min="minimumVintageYear" :max="new Date().getFullYear()"
-               :errorText="input.vintage.errorText" :showError="input.vintage.showError" @input="input.vintage.showError = false"
-            >
-               vintage:
-            </NumberInput>
-            <NumberInput :id="`ammunitionLeft${ id }`" v-model="input.ammunitionLeft.value" :min="0"
-               :errorText="'needs to be non-negative'" :showError="input.ammunitionLeft.showError" @input="input.ammunitionLeft.showError = false"
-            >
-               ammunition left:
-            </NumberInput>
-            <NumberInput :id="`altitude${ id }`" v-model="input.altitude.value" :min="0"
-               :errorText="'needs to be non-negative'" :showError="input.altitude.showError" @input="input.altitude.showError = false"
-            >
-               altitude (km):
-            </NumberInput>
-         </div>
-         <div class="flex flex-col gap-3 w-full max-w-xl lg:flex-row">
-            <BooleanInput v-model="input.hasAI.value" :name="`hasAI${ id }`"
-               class="flex-1 flexCentered"
-            >
-               does it have AI?
-            </BooleanInput>
-            <DateInput :id="`launchDate${ id }`" v-model="input.launchDate.value" :min="minimumLaunchDate" :max="new Date()"
-               :errorText="'needs to be between 1970 and now'" :showError="input.launchDate.showError" @input="input.launchDate.showError = false"
-               class="flex-1 flex items-center justify-center lg:justify-start"
-            >
-               launch date:
-            </DateInput>
-         </div>
+         <SatelliteForm :id="id" :initialValues="initialValues" ref="form" />
          <div class="flexCentered flex-col gap-0">
             <OperationButtons :id="id" :isDisabled="isProcessing" :isNew="isNew"
                @save="updateSatellite(false)" @create="updateSatellite(true)" @delete="modal.isOpen = true"
@@ -85,21 +37,18 @@
 
 <script lang="ts">
 import { defineComponent, type PropType } from "vue";
-import Button from "@/components/Misc/Button.vue"
-import Input from "@/components/Misc/Inputs/Input.vue"
-import BooleanInput from "@/components/Misc/Inputs/BooleanInput.vue"
-import NumberInput from "@/components/Misc/Inputs/NumberInput.vue";
-import DateInput from "../Misc/Inputs/DateInput.vue";
-import OperationButtons from "./OperationButtons.vue"
-import Timestamps from "./Timestamps.vue";
-import ConfirmModal from "../Misc/ConfirmModal.vue";
-import type { ifSatellite } from "@/typings/satellite";
+import OperationButtons from "./Satellite/OperationButtons.vue"
+import Timestamps from "./Satellite/Timestamps.vue";
+import ConfirmModal from "@/components/Misc/ConfirmModal.vue";
+import SatelliteForm from "./Satellite/Form.vue"
+import type { ifSatellite, ifSatelliteForm } from "@/typings/satellite";
 import { mapState } from "pinia";
 import { useUserStore } from "@/stores/user";
+import useVuelidate from "@vuelidate/core";
 
 export default defineComponent({
    name: "Satellite",
-   components: { Button, Input, BooleanInput, NumberInput, DateInput, Timestamps, OperationButtons, ConfirmModal },
+   components: { Timestamps, OperationButtons, ConfirmModal, SatelliteForm },
    props: {
       id: {
          type: String,
@@ -113,58 +62,40 @@ export default defineComponent({
          required: true,
       }
    },
+   setup(){
+      return {
+         v$: useVuelidate()
+      }
+   },
    data(){
       return {
-         minimumLaunchDate: new Date('01 Jan 1970 00:00:00 GMT'),
-         minimumVintageYear: 1900,
          isProcessing: false,
          error: <any> undefined,
          modal: {
             isOpen: false,
             closeFocusTarget: <HTMLElement | undefined> undefined
          },
-         input: {
-            sideNumber: {
-               value: "",
-               showError: false
-            },
-            manufacturer: {
-               value: "",
-               showError: false
-            },
-            softwareVersion: {
-               value: "",
-               showError: false,
-               pattern: /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-            },
-            model: {
-               value: ""
-            },
-            vintage: {
-               value: new Date().getFullYear(),
-               showError: false,
-               errorText: `needs to be between 1900 and ${ new Date().getFullYear() }`
-            },
-            launchDate: {
-               value: new Date(),
-               showError: false
-            },
-            ammunitionLeft: {
-               value: 0,
-               showError: false
-            },
-            altitude: {
-               value: 0,
-               showError: false
-            },
-            hasAI: {
-               value: false,
-            }
-         }
+         initialValues: <Partial<ifSatelliteForm>> {}
       }
    },
    beforeMount(){
-      this.resetForms()
+      const uselessKeys = ['createdAt', 'updatedAt', '_id']
+      if(!this.isNew){
+         const formKeys = Object.keys(this.satellite as ifSatellite).filter(key => !uselessKeys.includes(key))
+         this.initialValues = formKeys.reduce((previous, current) => ({
+            ...previous,
+            [current]: (this.satellite as ifSatellite)[current as keyof typeof this.satellite]
+         }), {})
+         return
+      }
+
+      this.initialValues = {
+         vintage: new Date().getFullYear(),
+         launchDate: new Date(),
+         ammunitionLeft: 3,
+         altitude: 300,
+         hasAI: false
+      }
    },
    mounted(){
       if(!this.isNew){
@@ -175,15 +106,17 @@ export default defineComponent({
       async updateSatellite(createNew: boolean){
          this.error = undefined
 
-         const isSatelliteValid = this.validateSatellite()
+         const isSatelliteValid = await this.v$.$validate()
          if(!isSatelliteValid){ return }
+
+         const inputValues = this.$refs.form.inputValues
 
          this.isProcessing = true
 
          try {
             const body = {
-               ...this.inputValues,
-               launchDate: this.inputValues.launchDate.getTime()
+               ...inputValues,
+               launchDate: inputValues.launchDate.getTime()
             }
 
             let satelliteData
@@ -207,7 +140,7 @@ export default defineComponent({
          }
 
          if(createNew){
-            this.resetForms()
+            this.$refs.form.resetMe()
          }
       },
       async deleteSatellite(){
@@ -228,48 +161,6 @@ export default defineComponent({
          }
 
          this.modal.isOpen = false
-      },
-      validateSatellite(){
-         const { sideNumber, manufacturer, softwareVersion, vintage, launchDate, ammunitionLeft, altitude } = this.inputValues
-
-         this.input.sideNumber.showError = sideNumber.length === 0
-         this.input.manufacturer.showError = manufacturer.length === 0
-         this.input.vintage.showError = vintage < this.minimumVintageYear || vintage > new Date().getFullYear()
-         this.input.launchDate.showError = launchDate < this.minimumLaunchDate || launchDate > new Date()
-         this.input.ammunitionLeft.showError = ammunitionLeft < 0
-         this.input.altitude.showError = altitude < 0
-
-         const isSoftwareVersionEmpty = softwareVersion.length === 0
-         const isSoftwareVersionValid = softwareVersion.match(this.input.softwareVersion.pattern) !== null
-         this.input.softwareVersion.showError = isSoftwareVersionEmpty || !isSoftwareVersionValid
-
-         // go through all this.input and if any has showError = true return false
-         return Object.values(this.input).reduce((previous, next) => {
-            // @ts-ignore
-            if(next.showError === undefined){
-               return previous
-            }
-            // @ts-ignore
-            return previous && !next.showError
-         }, true)
-      },
-      resetForms(){
-         if(!this.isNew){
-            Object.keys(this.input).forEach(key => {
-               this.input[key as keyof typeof this.input].value = (this.satellite as ifSatellite)[key as keyof typeof this.satellite]
-            })
-            return
-         }
-         
-         this.input.sideNumber.value = ""
-         this.input.manufacturer.value = ""
-         this.input.softwareVersion.value = ""
-         this.input.model.value = ""
-         this.input.vintage.value = new Date().getFullYear()
-         this.input.launchDate.value = new Date()
-         this.input.ammunitionLeft.value = 3
-         this.input.altitude.value = 300
-         this.input.hasAI.value = false
       }
    },
    computed: {
@@ -279,22 +170,6 @@ export default defineComponent({
       },
       isExpanded(){
          return this.id === this.selectedSatellite
-      },
-      inputValues(){
-         return {
-            sideNumber: this.input.sideNumber.value,
-            manufacturer: this.input.manufacturer.value,
-            softwareVersion: this.input.softwareVersion.value,
-            model:this.input.model.value,
-            vintage: this.input.vintage.value,
-            launchDate: this.input.launchDate.value,
-            ammunitionLeft: this.input.ammunitionLeft.value,
-            altitude: this.input.altitude.value,
-            hasAI: this.input.hasAI.value
-         }
-      },
-      softwareVersionInputErrorText(){
-         return this.input.softwareVersion.value.length === 0 ? "cannot be empty" : "invalid semver format"
       },
       errorMessage(): string{
          if(this.error === undefined){

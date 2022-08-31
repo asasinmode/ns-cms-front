@@ -1,5 +1,4 @@
-export interface ifSatellite {
-   _id: string
+export interface ifSatelliteForm {
    sideNumber: string
    manufacturer: string
    model: string
@@ -9,6 +8,10 @@ export interface ifSatellite {
    ammunitionLeft: number
    altitude: number
    hasAI: boolean
+}
+
+export interface ifSatellite extends ifSatelliteForm {
+   _id: string
    createdAt: Date
    updatedAt: Date
 }
