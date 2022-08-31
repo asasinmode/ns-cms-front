@@ -14,7 +14,7 @@
       <div v-show="isExpanded" class="flex flex-col items-center pt-4 pb-3 gap-4">
          <SatelliteForm :id="id" :initialValues="initialValues" ref="form" />
          <div class="flexCentered flex-col gap-0">
-            <OperationButtons :id="id" :isDisabled="isProcessing" :isNew="isNew"
+            <OperationButtons :id="id" :isLoading="isProcessing" :isNew="isNew"
                @save="updateSatellite(false)" @create="updateSatellite(true)" @delete="modal.isOpen = true"
             />
             <Timestamps v-if="satellite" :updatedAt="satellite.updatedAt" :createdAt="satellite.createdAt" />
@@ -194,6 +194,13 @@ export default defineComponent({
       },
       showModal(){
          return !this.isNew && this.modal.isOpen
+      }
+   },
+   watch: {
+      selectedSatellite(){
+         if(this.selectedSatellite !== this.id){
+            this.v$.$reset()
+         }
       }
    }
 })
